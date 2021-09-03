@@ -3,27 +3,27 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
 /// Extension with one [toShortString] method
-extension RoleToShortString on types.Role {
+/*extension RoleToShortString on types.Role {
   /// Converts enum to the string equal to enum's name
   String toShortString() {
     return toString().split('.').last;
   }
-}
+}*/
 
 /// Extension with one [toShortString] method
-extension RoomTypeToShortString on types.RoomType {
+/*extension RoomTypeToShortString on types.RoomType {
   /// Converts enum to the string equal to enum's name
   String toShortString() {
     return toString().split('.').last;
   }
-}
+}*/
 
 /// Fetches user from Firebase and returns a promise
-Future<Map<String, dynamic>> fetchUser(String userId, {String? role}) async {
+Future<Map<String, dynamic>> fetchUser(String userId, {String role}) async {
   final doc =
       await FirebaseFirestore.instance.collection('users').doc(userId).get();
 
-  final data = doc.data()!;
+  final data = doc.data();
 
   data['createdAt'] = data['createdAt']?.millisecondsSinceEpoch;
   data['id'] = doc.id;
@@ -38,7 +38,7 @@ Future<Map<String, dynamic>> fetchUser(String userId, {String? role}) async {
 /// If room has 2 participants, sets correct room name and image.
 Future<List<types.Room>> processRoomsQuery(
   User firebaseUser,
-  QuerySnapshot<Map<String, dynamic>> query,
+  QuerySnapshot query,
 ) async {
   final futures = query.docs.map(
     (doc) => processRoomDocument(doc, firebaseUser),
@@ -49,26 +49,26 @@ Future<List<types.Room>> processRoomsQuery(
 
 /// Returns a [types.Room] created from Firebase document
 Future<types.Room> processRoomDocument(
-  DocumentSnapshot<Map<String, dynamic>> doc,
+  DocumentSnapshot doc,
   User firebaseUser,
 ) async {
-  final data = doc.data()!;
+  final data = doc.data();
 
   data['createdAt'] = data['createdAt']?.millisecondsSinceEpoch;
   data['id'] = doc.id;
   data['updatedAt'] = data['updatedAt']?.millisecondsSinceEpoch;
 
-  var imageUrl = data['imageUrl'] as String?;
-  var name = data['name'] as String?;
+  var imageUrl = data['imageUrl'] as String;
+  var name = data['name'] as String;
   final type = data['type'] as String;
   final userIds = data['userIds'] as List<dynamic>;
-  final userRoles = data['userRoles'] as Map<String, dynamic>?;
+  final userRoles = data['userRoles'] as Map<String, dynamic>;
 
   final users = await Future.wait(
     userIds.map(
       (userId) => fetchUser(
         userId as String,
-        role: userRoles?[userId] as String?,
+        role: userRoles[userId] as String,
       ),
     ),
   );
@@ -79,7 +79,7 @@ Future<types.Room> processRoomDocument(
         (u) => u['id'] != firebaseUser.uid,
       );
 
-      imageUrl = otherUser['imageUrl'] as String?;
+      imageUrl = otherUser['imageUrl'] as String;
       name = '${otherUser['firstName'] ?? ''} ${otherUser['lastName'] ?? ''}'
           .trim();
     } catch (e) {
