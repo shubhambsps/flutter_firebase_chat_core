@@ -96,9 +96,9 @@ class FirebaseChatCore {
 
     final room = await FirebaseFirestore.instance.collection('rooms').add({
       'createdAt': FieldValue.serverTimestamp(),
-      'imageUrl': null,
+      'imageUrl': otherUser.imageUrl,
       'metadata': metadata,
-      'name': null,
+      'name': '${otherUser.firstName} ${otherUser.lastName}',
       'type': types.RoomType.direct.toShortString(),
       'updatedAt': FieldValue.serverTimestamp(),
       'userIds': users.map((u) => u.id).toList(),
