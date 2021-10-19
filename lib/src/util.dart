@@ -132,7 +132,9 @@ Future<String> getOtherUserName(User firebaseUser, List<dynamic> userIds) async 
       var data = snapshot.data();
       print('FNLN: ${data['firstName']} ${data['lastName']}');
       otherUserName = '${data['firstName']} ${data['lastName']}';
+      print('FNLN: $otherUserName');
     }
+    print('FNLN: $otherUserName');
     return otherUserName;
   });
 
