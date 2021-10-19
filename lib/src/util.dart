@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
 /// Extension with one [toShortString] method
@@ -95,6 +96,7 @@ Future<types.Room> processRoomDocument(
   data['name'] = name;
   data['users'] = users;
   data['userIds'] = userIds;
+  data['name'] = await getOtherUserName(firebaseUser, userIds);
 
   if (data['lastMessages'] != null) {
     final lastMessages = data['lastMessages'].map((lm) {
@@ -115,4 +117,23 @@ Future<types.Room> processRoomDocument(
   }
 
   return types.Room.fromJson(data);
+}
+
+Future<String> getOtherUserName(User firebaseUser, List<dynamic> userIds) async {
+  print('CURRENT USER ID: ${firebaseUser.uid}');
+  print('SELECTED CHAT USER: $userIds');
+  String otherUserName = '';
+
+  userIds.forEach((element) async {
+
+    if(firebaseUser.uid != element){
+      print(element);
+      var snapshot = await FirebaseFirestore.instanceFor(app: Firebase.app('secondary')).collection('users').doc(element.toString()).get();
+      var data = snapshot.data();
+      print('FNLN: ${data['firstName']} ${data['lastName']}');
+      otherUserName = '${data['firstName']} ${data['lastName']}';
+    }
+  });
+
+  return otherUserName;
 }
