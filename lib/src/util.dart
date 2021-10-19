@@ -133,7 +133,8 @@ Future<String> getOtherUserName(User firebaseUser, List<dynamic> userIds) async 
       print('FNLN: ${data['firstName']} ${data['lastName']}');
       otherUserName = '${data['firstName']} ${data['lastName']}';
     }
+    return otherUserName;
   });
 
-  return otherUserName;
+  return 'NA';
 }
