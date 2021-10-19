@@ -63,8 +63,8 @@ Future<types.Room> processRoomDocument(
   final type = data['type'] as String;
   final userIds = data['userIds'] as List<dynamic>;
   final userRoles = data['userRoles'] as Map<String, dynamic>;
-  final users = [];
-  if(userRoles != null)
+  // final users = [];
+  /*if(userRoles != null)
     {
       final users = await Future.wait(
         userIds.map(
@@ -74,7 +74,16 @@ Future<types.Room> processRoomDocument(
           ),
         ),
       );
-    }
+    }*/
+
+  final users = await Future.wait(
+    userIds.map(
+          (userId) => fetchUser(
+        userId as String,
+        role: userRoles[userId] as String,
+      ),
+    ),
+  );
 
   if (type == types.RoomType.direct.toShortString()) {
     try {
