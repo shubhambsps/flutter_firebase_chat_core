@@ -122,21 +122,11 @@ Future<types.Room> processRoomDocument(
 Future<String> getOtherUserName(User firebaseUser, List<dynamic> userIds) async {
   print('CURRENT USER ID: ${firebaseUser.uid}');
   print('SELECTED CHAT USER: $userIds');
-  String otherUserName = '';
 
-  userIds.forEach((element) async {
+  final e = userIds.where((element) => element != firebaseUser.uid).toList();
 
-    if(firebaseUser.uid != element){
-      print(element);
-      var snapshot = await FirebaseFirestore.instanceFor(app: Firebase.app('secondary')).collection('users').doc(element.toString()).get();
-      var data = snapshot.data();
-      print('FNLN: ${data['firstName']} ${data['lastName']}');
-      otherUserName = '${data['firstName']} ${data['lastName']}';
-      print('FNLN: $otherUserName');
-    }
-    print('FNLN: $otherUserName');
-    return otherUserName;
-  });
+  final snapshot = await FirebaseFirestore.instanceFor(app: Firebase.app('secondary')).collection('users').doc(e[0].toString()).get();
 
-  return 'NA';
+  final data = snapshot.data();
+  return '${data['firstName']} ${data['lastName']}';
 }
