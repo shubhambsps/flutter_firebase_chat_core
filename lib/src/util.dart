@@ -125,7 +125,7 @@ Future<String> getOtherUserName(User firebaseUser, List<dynamic> userIds) async 
 
   final e = userIds.where((element) => element != firebaseUser.uid).toList();
 
-  final snapshot = await FirebaseFirestore.instanceFor(app: Firebase.app('secondary')).collection('users').doc(e[0].toString()).get();
+  final snapshot = await FirebaseFirestore.instance.collection('users').doc(e[0].toString()).get();
 
   final data = snapshot.data();
   return '${data['firstName']} ${data['lastName']}';
