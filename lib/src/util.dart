@@ -64,6 +64,7 @@ Future<types.Room> processRoomDocument(
   final type = data['type'] as String;
   final userIds = data['userIds'] as List<dynamic>;
   final userRoles = data['userRoles'] as Map<String, dynamic>;
+  data['name'] = await getOtherUserName(firebaseUser, userIds);
   final users = [];
   if(userRoles != null)
     {
@@ -93,10 +94,9 @@ Future<types.Room> processRoomDocument(
   }
 
   data['imageUrl'] = imageUrl;
-  data['name'] = name;
+  // data['name'] = name;
   data['users'] = users;
   data['userIds'] = userIds;
-  data['name'] = await getOtherUserName(firebaseUser, userIds);
 
   if (data['lastMessages'] != null) {
     final lastMessages = data['lastMessages'].map((lm) {
