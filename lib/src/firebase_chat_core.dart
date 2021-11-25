@@ -119,6 +119,8 @@ class FirebaseChatCore {
       metadata: metadata,
       type: types.RoomType.direct,
       users: users,
+      name: '${otherUser.firstName ?? ''} ${otherUser.lastName ?? ''}',
+      imageUrl: otherUser.imageUrl
     );
   }
 
